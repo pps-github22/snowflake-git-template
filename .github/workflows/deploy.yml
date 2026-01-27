@@ -1,0 +1,31 @@
+name: Snowflake Deployment Template
+
+# Trigger the workflow on push to main branch
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  prepare-environment:
+    runs-on: windows-latest
+
+    steps:
+      # Step 1: Checkout the code from GitHub
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Setup Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      # Step 3: Install Python dependencies
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      # Step 4: Optional message to confirm workflow ran
+      - name: Confirm workflow
+        run: echo "Workflow ran successfully!"
