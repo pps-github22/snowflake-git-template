@@ -2,9 +2,9 @@ name: Bootstrap branches
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+
+permissions:
+  contents: write
 
 jobs:
   create-branches:
@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Configure git
         run: |
@@ -21,14 +23,18 @@ jobs:
 
       - name: Create develop branch if missing
         run: |
-          if ! git show-ref --verify --quiet refs/remotes/origin/develop; then
+          if git ls-remote --heads origin develop | grep develop; then
+            echo "develop already exists"
+          else
             git checkout -b develop
             git push origin develop
           fi
 
       - name: Create release branch if missing
         run: |
-          if ! git show-ref --verify --quiet refs/remotes/origin/release; then
+          if git ls-remote --heads origin release | grep release; then
+            echo "release already exists"
+          else
             git checkout main
             git checkout -b release
             git push origin release
